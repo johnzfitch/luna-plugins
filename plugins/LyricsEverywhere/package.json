@@ -1,0 +1,11 @@
+{
+	"name": "@jxnxsdev/lyrics-everywhere",
+	"description": "Lyrics fixed to the bottom of the screen.",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module"
+}
