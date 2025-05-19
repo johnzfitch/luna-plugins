@@ -47,6 +47,12 @@ importers:
 
   plugins/LyricsEverywhere: {}
 
+  plugins/UwU-ifier:
+    dependencies:
+      uwuify:
+        specifier: ^1.0.1
+        version: 1.0.1
+
 packages:
 
   '@electron/get@2.0.3':
@@ -1070,6 +1076,13 @@ packages:
   url-join@4.0.1:
     resolution: {integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==}
 
+  uwuifier@2.0.4:
+    resolution: {integrity: sha512-6enYpIJOMtfkn1VTDm/vTb15jV7g63jyQWXwCyM7jAru8qTValSgu61qJbUXGHGOifsTmw+XVR6Lf4f2pjA0IA==}
+    engines: {pnpm: please-use-npm, yarn: please-use-npm}
+
+  uwuify@1.0.1:
+    resolution: {integrity: sha512-RrRNPGBVDSY4NmdKee9Dg4koaroAPa5ip324TjuHc9Abf3Jz0h75Rw5xvGRTvlR5ysOXNT+Qh2UZW5vaUdwNeQ==}
+
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
@@ -2067,6 +2080,12 @@ snapshots:
   universalify@0.1.2: {}
 
   url-join@4.0.1: {}
+
+  uwuifier@2.0.4: {}
+
+  uwuify@1.0.1:
+    dependencies:
+      uwuifier: 2.0.4
 
   whatwg-encoding@2.0.0:
     dependencies:

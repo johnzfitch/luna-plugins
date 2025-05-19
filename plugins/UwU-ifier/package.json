@@ -1,0 +1,14 @@
+{
+	"name": "@jxnxsdev/uwu-ifier",
+	"description": "UwU-ifies everything.",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module",
+	"dependencies": {
+		"uwuify": "^1.0.1"
+	}
+}
