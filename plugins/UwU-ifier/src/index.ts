@@ -4,7 +4,7 @@ import uwuify from "uwuify";
 
 const uwuifier = new uwuify();
 
-const unloads = new Set<LunaUnload>();
+export const unloads = new Set<LunaUnload>();
 unloads.add(() => {
   document.location.reload();
 });

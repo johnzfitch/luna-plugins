@@ -1,0 +1,22 @@
+{
+	"name": "@jxnxsdev/tidal-wave",
+	"description": "Tidal Wave allows multiple people adding songs to the tidal queue. No addional tidal account required.",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module",
+	"dependencies": {
+		"adm-zip": "^0.5.16",
+		"express": "^5.1.0",
+		"ws": "^8.18.2"
+	},
+	"devDependencies": {
+		"@types/adm-zip": "^0.5.7",
+		"@types/express": "^5.0.2",
+		"@types/unzipper": "^0.10.11",
+		"@types/ws": "^8.18.1"
+	}
+}

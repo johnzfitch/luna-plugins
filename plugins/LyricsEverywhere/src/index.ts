@@ -26,7 +26,7 @@ lyricsElement.style.cssText = `
 lyricsElement.innerHTML = `<strong>No lyrics loaded</strong>`;
 document.body.appendChild(lyricsElement);
 
-const unloads = new Set<LunaUnload>();
+export const unloads = new Set<LunaUnload>();
 let lyricsMap: Map<number, string> = new Map();
 
 unloads.add(() => {
