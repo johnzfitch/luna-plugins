@@ -3,22 +3,40 @@ import React from "react"
 import { ReactiveStore } from "@luna/core"
 import { generateQRCode } from "./native/qrHelper.native"
 
+type Settings = {
+  webPort: number
+  usePassword: boolean
+  password: string
+}
+
 // Load plugin settings
-export const settings = await ReactiveStore.getPluginStorage("TidalWave", {
-  enabled: true,
+export const settings = await ReactiveStore.getPluginStorage<Settings>("TidalWave", {
   webPort: 80,
+  usePassword: false,
+  password: "",
 })
 
 export const Settings = () => {
   const [webPort, setWebPort] = useState(settings.webPort)
+  const [usePassword, setUsePassword] = useState(settings.usePassword)
+  const [password, setPassword] = useState(settings.password)
   const [qrCode, setQrCode] = useState<string | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      const code = await generateQRCode()
-      setQrCode(code.startsWith("data:image") ? code : `data:image/png;base64,${code}`)
+      const code: string = await generateQRCode(webPort)
+      if (typeof code === "string") {
+        setQrCode(code.startsWith("data:image") ? code : `data:image/png;base64,${code}`)
+      } else {
+        setQrCode(null)
+      }
     })()
   }, [])
+
+  // Update settings when values change
+  const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
+    settings[key] = value
+  }
 
   return (
     <div
@@ -85,7 +103,7 @@ export const Settings = () => {
       >
         {qrCode ? (
           <img
-            src={qrCode || "/placeholder.svg"}
+            src={qrCode}
             alt="QR Code"
             style={{
               width: "100%",
@@ -98,43 +116,71 @@ export const Settings = () => {
         )}
       </div>
 
-      <div>
-        <label
-          style={{
-            display: "block",
-            fontSize: "0.9rem",
-            marginBottom: "8px",
-            color: "rgba(255, 255, 255, 0.7)",
-          }}
-        >
-          Web Port
-        </label>
+      <div style={{ marginBottom: "16px" }}>
+        <label style={labelStyle}>Web Port (Please restart Tidal for changes to take affect)</label>
         <input
           type="number"
           value={webPort}
-          onChange={(e) => setWebPort(Number(e.target.value))}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            borderRadius: "8px",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            backgroundColor: "rgba(255, 255, 255, 0.05)",
-            color: "#fff",
-            fontSize: "1rem",
-            outline: "none",
-            transition: "border-color 0.2s, box-shadow 0.2s",
-            boxSizing: "border-box",
+          onChange={(e) => {
+            const value = parseInt(e.target.value, 10)
+            setWebPort(value)
+            updateSetting("webPort", value)
           }}
-          onFocus={(e) => {
-            e.target.style.borderColor = "rgba(255, 105, 180, 0.5)"
-            e.target.style.boxShadow = "0 0 0 2px rgba(255, 105, 180, 0.2)"
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "rgba(255, 255, 255, 0.1)"
-            e.target.style.boxShadow = "none"
-          }}
+          style={inputStyle}
         />
       </div>
+
+      <div style={{ marginBottom: "16px" }}>
+        <label style={labelStyle}>
+          <input
+            type="checkbox"
+            checked={usePassword}
+            onChange={(e) => {
+              const value = e.target.checked
+              setUsePassword(value)
+              updateSetting("usePassword", value)
+            }}
+            style={{ marginRight: "8px" }}
+          />
+          Require Password
+        </label>
+      </div>
+
+      {usePassword && (
+        <div style={{ marginBottom: "16px" }}>
+          <label style={labelStyle}>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => {
+              const value = e.target.value
+              setPassword(value)
+              updateSetting("password", value)
+            }}
+            style={inputStyle}
+          />
+        </div>
+      )}
     </div>
   )
+}
+
+const labelStyle = {
+  display: "block",
+  fontSize: "0.9rem",
+  marginBottom: "8px",
+  color: "rgba(255, 255, 255, 0.7)",
+}
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px 16px",
+  borderRadius: "8px",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
+  color: "#fff",
+  fontSize: "1rem",
+  outline: "none",
+  transition: "border-color 0.2s, box-shadow 0.2s",
+  boxSizing: "border-box" as const,
 }
