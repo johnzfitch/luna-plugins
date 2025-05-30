@@ -10,7 +10,6 @@ export const settings = await ReactiveStore.getPluginStorage("LyricsEverywhere",
 
 export const Settings = () => {
 	const [cazjamCompatibility, setCatjamCompatibility] = React.useState(settings.catjamCompatibility);
-    setCatJamCompatible(cazjamCompatibility);
 	return (
 		<LunaSettings>
 			<LunaSwitchSetting
