@@ -24,6 +24,36 @@ unloads.add(() => {
 
 let lyricsMap: Map<number, string> = new Map();
 
+initialLoad();
+
+async function initialLoad() {
+    let mediaItem = await MediaItem.fromPlaybackContext();
+
+    if (!mediaItem) return;
+
+    const lyrics = await mediaItem.lyrics();
+    if (!lyrics) {
+        lyricsElement.textContent = "No lyrics loaded";
+        lyricsElement.style.display = "none";
+        lyricsMap = new Map();
+        return;
+    }
+
+    lyricsElement.style.display = "block";
+    lyricsElement.textContent = "...";
+
+    const map = new Map<number, string>();
+    for (const line of lyrics.subtitles.split("\n")) {
+        const [timePart, textPart] = line.split("]");
+        if (!textPart) continue;
+        const [min, sec] = timePart.replace("[", "").split(":").map(Number);
+        const timeInSec = Math.floor(min * 60 + sec);
+        map.set(timeInSec, textPart.trim());
+    }
+
+    lyricsMap = map;
+}
+
 MediaItem.onMediaTransition(unloads, async (mediaItem) => {
     if (!mediaItem) return;
 
