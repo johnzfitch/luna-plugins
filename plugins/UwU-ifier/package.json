@@ -1,6 +1,6 @@
 {
 	"name": "@jxnxsdev/uwu-ifier",
-	"description": "UwU-ifies everything.",
+	"description": "UwU-ifies everything. Note: You have to restart the app after disabling this plugin.",
 	"author": {
 		"name": "jxnxsdev",
 		"url": "https://github.com/jxnxsdev",
