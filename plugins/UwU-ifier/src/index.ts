@@ -1,6 +1,9 @@
 import type { LunaUnload } from "@luna/core";
 import { redux, MediaItem, PlayState, ipcRenderer } from "@luna/lib";
 import uwuify from "uwuify";
+import { settings } from "./Settings";
+
+export { Settings } from "./Settings";
 
 const uwuifier = new uwuify();
 
@@ -154,9 +157,11 @@ function replaceBackgroundImage(el: HTMLElement) {
   handledBgImages.add(el);
 }
 
+uwuifyTextNodes(document.body);
+
 preloadAllNekoImages().then(() => {
-  uwuifyTextNodes(document.body);
-  replaceAllImages(document.body);
+  
+  if (settings.replaceImages) replaceAllImages(document.body);
 
   const observer = new MutationObserver((mutations) => {
     const addedNodes: Node[] = [];
@@ -169,20 +174,20 @@ preloadAllNekoImages().then(() => {
         mutation.target instanceof HTMLImageElement &&
         mutation.attributeName === "src"
       ) {
-        replaceImage(mutation.target);
+        if (settings.replaceImages) replaceImage(mutation.target);
       } else if (
         mutation.type === "attributes" &&
         mutation.target instanceof HTMLElement &&
         mutation.attributeName === "style"
       ) {
-        replaceBackgroundImage(mutation.target);
+        if (settings.replaceImages) replaceBackgroundImage(mutation.target);
       }
     }
 
     if (addedNodes.length > 0) {
       addedNodes.forEach((node) => {
         uwuifyTextNodes(node);
-        replaceAllImages(node);
+        if (settings.replaceImages) replaceAllImages(document.body);
       });
     }
   });
@@ -194,3 +199,7 @@ preloadAllNekoImages().then(() => {
     attributeFilter: ["src", "style"],
   });
 });
+
+export async function replaceImagesFunc() {
+  replaceAllImages(document.body);
+}
