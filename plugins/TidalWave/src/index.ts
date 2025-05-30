@@ -15,5 +15,6 @@ unloads.add(() => {
 webServer.startServer(settings.webPort);
 
 export async function search(query: string) {
-    // use tidals search 
+    // use tidals search
+    
 }

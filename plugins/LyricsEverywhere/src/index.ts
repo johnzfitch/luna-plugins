@@ -1,56 +1,16 @@
 import type { LunaUnload } from "@luna/core";
 import { redux, MediaItem, PlayState, ipcRenderer } from "@luna/lib";
+import { settings } from "./Settings";
+
+export { Settings } from "./Settings";
 
 document.querySelectorAll("#lyewLyrics").forEach(el => el.remove());
 
 const style = document.createElement("style");
-style.textContent = `
-    #lyewLyrics {
-        position: fixed;
-        bottom: 100px;
-        left: 20px;
-        background: #ffffff;
-        color: #000;
-        padding: 10px 16px;
-        border: 3px solid #111;
-        font-family: system-ui, sans-serif;
-        font-size: 14px;
-        z-index: 9999;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        white-space: normal;
-        word-break: break-word;
-        max-width: 50vw;
-        width: fit-content;
-        transition: width 0.2s ease, height 0.2s ease, padding 0.2s ease;
-        opacity: 0.8;
-    }
 
-    #lyewLyrics::after {
-        content: "";
-        position: absolute;
-        bottom: -10px;
-        left: 20px;
-        width: 0;
-        height: 0;
-        border: 10px solid transparent;
-        border-top-color: #111;
-        border-bottom: 0;
-    }
-
-    #lyewLyrics::before {
-        content: "";
-        position: absolute;
-        bottom: -8px;
-        left: 20px;
-        width: 0;
-        height: 0;
-        border: 10px solid transparent;
-        border-top-color: #ffffff;
-        border-bottom: 0;
-    }
-`;
-document.head.appendChild(style);
+setCatJamCompatible(settings.catjamCompatibility).then(() => {
+    document.head.appendChild(style);
+});
 
 const lyricsElement = document.createElement("div");
 lyricsElement.id = "lyewLyrics";
@@ -115,3 +75,83 @@ ipcRenderer.on(unloads, "client.playback.playersignal", (data) => {
         if (line) lyricsElement.textContent = line;
     }
 });
+
+export async function setCatJamCompatible(enabled: boolean) {
+    if (enabled) {
+        style.textContent = `
+            #lyewLyrics {
+                position: fixed;
+                bottom: 100px;
+                left: 20px;
+                background: #ffffff;
+                color: #000;
+                padding: 10px 16px;
+                border: 3px solid #111;
+                font-family: system-ui, sans-serif;
+                font-size: 14px;
+                z-index: 9999;
+                border-radius: 16px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                white-space: normal;
+                word-break: break-word;
+                max-width: 50vw;
+                width: fit-content;
+                transition: width 0.2s ease, height 0.2s ease, padding 0.2s ease;
+                opacity: 0.8;
+            }
+    
+            #lyewLyrics::after {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 20px;
+                width: 0;
+                height: 0;
+                border: 10px solid transparent;
+                border-top-color: #111;
+                border-bottom: 0;
+            }
+    
+            #lyewLyrics::before {
+                content: "";
+                position: absolute;
+                bottom: -8px;
+                left: 20px;
+                width: 0;
+                height: 0;
+                border: 10px solid transparent;
+                border-top-color: #ffffff;
+                border-bottom: 0;
+            }
+        `;
+        
+    } else {
+        style.textContent = `
+            #lyewLyrics {
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(50, 50, 50, 0.9);
+                color: white;
+                padding: 12px 20px;
+                font-family: system-ui, sans-serif;
+                font-size: 14px;
+                z-index: 9999;
+                border-radius: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                white-space: normal;
+                word-break: break-word;
+                max-width: 60vw;
+                width: fit-content;
+                opacity: 0.9;
+                text-align: center;
+            }
+
+            #lyewLyrics::before,
+            #lyewLyrics::after {
+                display: none;
+            }
+        `;
+    }
+}

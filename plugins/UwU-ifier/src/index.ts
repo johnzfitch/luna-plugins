@@ -5,9 +5,6 @@ import uwuify from "uwuify";
 const uwuifier = new uwuify();
 
 export const unloads = new Set<LunaUnload>();
-unloads.add(() => {
-  document.location.reload();
-});
 
 const uwuifiedNodes = new WeakSet<Text>();
 
