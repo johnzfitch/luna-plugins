@@ -19,7 +19,9 @@ function getPreferredLocalIPv4(): string {
     const interfaces = os.networkInterfaces();
     const candidates: { ip: string; priority: number }[] = [];
 
-    for (const ifaceList of Object.values(interfaces)) {
+    for (const name of Object.keys(interfaces)) {
+        if (!(name.toLowerCase().includes("ethernet") || name.toLowerCase().includes("wireless"))) continue;
+        const ifaceList = interfaces[name];
         if (!ifaceList) continue;
         for (const iface of ifaceList) {
             if (iface.family === "IPv4" && !iface.internal) {
