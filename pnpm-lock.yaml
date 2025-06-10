@@ -47,6 +47,37 @@ importers:
 
   plugins/LyricsEverywhere: {}
 
+  plugins/SpinnyCover:
+    dependencies:
+      adm-zip:
+        specifier: ^0.5.16
+        version: 0.5.16
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      qrcode:
+        specifier: ^1.5.4
+        version: 1.5.4
+      ws:
+        specifier: ^8.18.2
+        version: 8.18.2
+    devDependencies:
+      '@types/adm-zip':
+        specifier: ^0.5.7
+        version: 0.5.7
+      '@types/express':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@types/qrcode':
+        specifier: ^1.5.5
+        version: 1.5.5
+      '@types/unzipper':
+        specifier: ^0.10.11
+        version: 0.10.11
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
+
   plugins/TidalWave:
     dependencies:
       adm-zip:
