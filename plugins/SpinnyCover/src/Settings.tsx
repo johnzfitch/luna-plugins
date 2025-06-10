@@ -2,6 +2,7 @@ import React from "react";
 
 import { ReactiveStore } from "@luna/core";
 import { LunaSettings, LunaSwitchSetting, LunaNumberSetting } from "@luna/ui";
+import { getRandomHelicopterGif } from "./helicopter";
 
 export const storage = ReactiveStore.getStore("SpinnyCover");
 export const settings = await ReactiveStore.getPluginStorage("SpinnyCover", { spinSpeed: 10, blurPercentage: 50 });
@@ -42,6 +43,7 @@ export const Settings = () => {
                         const helicopterGif = document.getElementById("spinnyCoverHelicopter") as HTMLImageElement;
                         if (helicopterGif) {
                             helicopterGif.style.display = "block";
+                            helicopterGif.src = getRandomHelicopterGif();
                             setTimeout(() => {
                                 helicopterGif.style.display = "none";
                             }, 5000);
