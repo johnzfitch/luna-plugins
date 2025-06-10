@@ -14,7 +14,7 @@ export const Settings = () => {
     const [blurPercentage, setBlurPercentage] = React.useState(settings.blurPercentage);
 
     React.useEffect(() => {
-        const invertedSpeed = 10000 - spinSpeed * 10;
+        const invertedSpeed = 5000 - spinSpeed * 5;
         document.documentElement.style.setProperty("--spinny-cover-speed", `${invertedSpeed}ms`);
         document.documentElement.style.setProperty("--spinny-cover-blur", `${blurPercentage / 5}px`);
 
@@ -30,7 +30,7 @@ export const Settings = () => {
                 max={1000}
                 onNumber={(value: number) => {
                     setSpinSpeed((settings.spinSpeed = value));
-                    const invertedSpeed = 10000 - spinSpeed * 10;
+                    const invertedSpeed = 5000 - spinSpeed * 5;
                     document.documentElement.style.setProperty("--spinny-cover-speed", `${invertedSpeed}ms`);
                     if (lastSpeedNumber !== value && lastSpeedNumber < 960 && value >= 960) {
                         const audioPlayer = document.getElementById("spinnyCoverAudio") as HTMLAudioElement;
