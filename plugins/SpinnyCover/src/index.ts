@@ -121,7 +121,7 @@ const coverBgNext = document.createElement("div");
 coverBgNext.id = "spinnyCoverBgNext";
 document.body.appendChild(coverBgNext);
 
-const invertedSpeed = 5000 - settings.spinSpeed * 5;
+const invertedSpeed = 20000 - settings.spinSpeed * 20;
 document.documentElement.style.setProperty("--spinny-cover-speed", `${invertedSpeed}ms`);
 document.documentElement.style.setProperty("--spinny-cover-blur", `${settings.blurPercentage / 5}px`);
 
