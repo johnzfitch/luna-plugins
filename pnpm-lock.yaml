@@ -109,6 +109,8 @@ importers:
         specifier: ^8.18.1
         version: 8.18.1
 
+  plugins/TotalPlayTime: {}
+
   plugins/UwU-ifier:
     dependencies:
       uwuify:
