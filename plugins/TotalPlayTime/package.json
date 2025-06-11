@@ -1,0 +1,15 @@
+{
+	"name": "@jxnxsdev/total-play-time",
+	"description": "Shows the total play time of all songs in the current playlist.",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module",
+	"dependencies": {
+	},
+	"devDependencies": {
+	}
+}
