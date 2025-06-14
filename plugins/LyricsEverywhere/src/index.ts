@@ -1,6 +1,10 @@
 import type { LunaUnload } from "@luna/core";
 import { redux, MediaItem, PlayState, ipcRenderer } from "@luna/lib";
 import { settings } from "./Settings";
+import "./lyricsWindow.native";
+import { openLyricsWindow as openWindowNative, closeWindow, sendIPC } from "./lyricsWindow.native";
+
+export const openWindow = () => openWindowNative();
 
 export { Settings } from "./Settings";
 
@@ -94,15 +98,41 @@ function getClosestTime(currentTime: number): number | null {
     return closest;
 }
 
-ipcRenderer.on(unloads, "client.playback.playersignal", (data) => {
+ipcRenderer.on(unloads, "client.playback.playersignal", async (data) => {
     const signal = data.signal;
     if (signal !== "media.currenttime") return;
     const currentTime = Math.floor(Number(data.time));
     const closest = getClosestTime(currentTime);
+    let line: string | undefined = "";
     if (closest !== null) {
-        const line = lyricsMap.get(closest);
+        line = lyricsMap.get(closest);
         if (line) lyricsElement.textContent = line;
     }
+    
+    if (!line || line.trim() === "") {
+        lyricsElement.textContent = "No lyrics";
+    }
+
+    const mediaItem = await MediaItem.fromPlaybackContext();
+    if (!mediaItem) return;
+    let title = await mediaItem.title();
+    let artist = await mediaItem.artist();
+    let coverUrl = await mediaItem.coverUrl();
+    let lyrics = await mediaItem.lyrics();
+
+    let songLength = await mediaItem.duration;
+    let songProgress = data.time;
+    
+
+    sendIPC("lyev.update", JSON.stringify({
+        title: title || "Unknown Title",
+        artist: artist || "Unknown Artist",
+        coverUrl: coverUrl || "",
+        lyrics: lyrics || "",
+        lyricsLine: line || "No lyrics available",
+        songLength: songLength || 0,
+        songProgress: songProgress || 0,
+    }));
 });
 
 export async function setCatJamCompatible(enabled: boolean) {
@@ -183,3 +213,5 @@ export async function setCatJamCompatible(enabled: boolean) {
         }
     `;
 }
+
+unloads.add(closeWindow);
