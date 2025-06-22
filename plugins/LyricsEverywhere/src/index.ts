@@ -62,7 +62,7 @@ MediaItem.onMediaTransition(unloads, async (mediaItem) => {
     if (!mediaItem) return;
 
     const lyrics = await mediaItem.lyrics();
-    if (!lyrics) {
+    if (!lyrics || !lyrics.subtitles) {
         lyricsElement.textContent = "No lyrics loaded";
         lyricsElement.style.display = "none";
         lyricsMap = new Map();
