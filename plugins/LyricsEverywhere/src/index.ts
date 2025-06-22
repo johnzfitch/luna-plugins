@@ -110,7 +110,7 @@ ipcRenderer.on(unloads, "client.playback.playersignal", async (data) => {
     }
     
     if (!line || line.trim() === "") {
-        lyricsElement.textContent = "No lyrics";
+        lyricsElement.textContent = "...";
     }
 
     const mediaItem = await MediaItem.fromPlaybackContext();
