@@ -1,0 +1,11 @@
+{
+	"name": "@jxnxsdev/custom-fonts",
+	"description": "Allows you to set custom fonts for text elements in the app.",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module"
+}
