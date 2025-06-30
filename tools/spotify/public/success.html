@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Successful - Syncify</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #191414 0%, #1db954 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(25, 20, 20, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(29, 185, 84, 0.2);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1db954;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #1db954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 2rem;
+        }
+
+        .success-icon::before {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #b3b3b3;
+            margin-bottom: 30px;
+        }
+
+        .highlight {
+            color: #1db954;
+            font-weight: 600;
+        }
+
+        .privacy-note {
+            background: rgba(29, 185, 84, 0.1);
+            border: 1px solid rgba(29, 185, 84, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #b3b3b3;
+        }
+
+        .privacy-note .icon {
+            color: #1db954;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">Syncify</div>
+
+        <div class="success-icon"></div>
+
+        <h1>Login Successful!</h1>
+
+        <div class="message">
+            Your Spotify authentication was completed successfully. You can now press the <span
+                class="highlight">"Retrieve Token"</span> button inside Tidal to continue with the synchronization
+            process.
+        </div>
+
+        <div class="privacy-note">
+            <span class="icon">🔒</span>
+            <strong>Privacy & Security:</strong> Your authentication token will be automatically deleted from our
+            servers after you retrieve it, ensuring your data remains secure and private.
+        </div>
+    </div>
+</body>
+
+</html>

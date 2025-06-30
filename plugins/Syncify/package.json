@@ -1,0 +1,13 @@
+{
+	"name": "@jxnxsdev/syncify",
+	"description": "Allows you to play Spotify playlists on Tidal",
+	"author": {
+		"name": "jxnxsdev",
+		"url": "https://github.com/jxnxsdev",
+		"avatarUrl": ""
+	},
+	"main": "./src/index.ts",
+	"type": "module",
+	"dependencies": {
+	}
+}
