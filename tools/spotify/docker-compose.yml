@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  spotify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spotify:latest
+    container_name: spotify_container
+    ports:
+      - "3086:3086"
+    environment:
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - REDIRECT_URI=${SPOTIFY_REDIRECT_URI}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

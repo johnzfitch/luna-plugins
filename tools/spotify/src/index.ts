@@ -106,7 +106,7 @@ fastify.post('/refreshToken', async (request, reply) => {
     return reply.send({ accessToken: tokenData.access_token });
 });
 
-fastify.listen({ port: 3010, host: '0.0.0.0' }, err => {
+fastify.listen({ port: 3086, host: '0.0.0.0' }, err => {
     if (err) throw err;
     console.log('Server running at http://localhost:3010');
 });
