@@ -1,5 +1,5 @@
 export type DataSong = {
-    id: number;
+    id: string;
     title: string;
     artist: string;
     spotifyId: string;

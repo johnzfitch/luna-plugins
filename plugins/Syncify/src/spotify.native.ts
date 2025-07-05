@@ -141,14 +141,14 @@ export async function getSpotifyPlaylistSongs(spotifyPlaylist: SpotifyPlaylist, 
                 songs.push({
                     title: item.track.name,
                     // @ts-expect-error
-                    artist: item.track.artists.map(artist => artist.name).join(", "),
+                    artists: item.track.artists.map(artist => artist.name),
                     spotifyId: item.track.id
                 });
             }
         }
         return {
             ...spotifyPlaylist,
-            songs
+            songs: songs
         };
     } catch (err) {
         console.error("Error fetching playlist songs:", err);
