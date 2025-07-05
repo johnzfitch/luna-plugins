@@ -95,14 +95,6 @@ fastify.post('/refreshToken', async (request, reply) => {
     });
     const tokenData = await tokenRes.json() as { access_token?: string; [key: string]: any };
     if (!tokenData.access_token) return reply.status(500).send(tokenData);
-    for (const [uuid, entry] of tokenCache.entries()) {
-        if (entry.refreshToken === refreshToken) {
-            tokenCache.set(uuid, {
-                accessToken: tokenData.access_token,
-                refreshToken
-            });
-        }
-    }
     return reply.send({ accessToken: tokenData.access_token });
 });
 
