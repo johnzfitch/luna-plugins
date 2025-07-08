@@ -24,8 +24,8 @@ export const updatePlaylistsNative = () => updatePlaylists();
 
 async function initializePlugin() {
     initializeDatabase();
+    await refreshTokenIfNeeded();
     await updatePlaylists();
-    // await refreshTokenIfNeeded(); // TODO: Uncomment when releasing
 };
 
 async function refreshTokenIfNeeded() {
