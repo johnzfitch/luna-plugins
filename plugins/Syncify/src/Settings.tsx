@@ -64,7 +64,7 @@ export const Settings = () => {
                 You can get the credentials from 
                 <a href="https://developer.spotify.com" target="_blank">https://developer.spotify.com</a> -
                 visit 
-                <a href="https://github.com/jxnxsdev/luna-plugins/spotify.md" target="_blank">this page</a>
+                <a href="https://github.com/jxnxsdev/luna-plugins/blob/main/spotify.md" target="_blank">this page</a>
                 for help
             </p>
             <LunaTextSetting
