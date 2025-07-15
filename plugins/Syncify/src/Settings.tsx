@@ -5,14 +5,16 @@ import {
     LunaSettings,
     LunaButtonSetting,
     LunaSelectSetting,
-    LunaSelectItem
+    LunaSelectItem,
+    LunaTextSetting
 } from "@luna/ui";
 
 import {
     openSpotifyTokenGeneratorNative,
     getTokenFromGeneratorNative,
     getSpotifyPlaylistsNative,
-    updateActivePlaylists
+    updateActivePlaylists,
+    setCredentialsNative
 } from ".";
 import { updatePlaylistsNative } from ".";
 
@@ -21,6 +23,8 @@ export const settings = await ReactiveStore.getPluginStorage("Syncify", {
     isLoggedIn: false,
     token: "",
     refreshToken: "",
+    clientId: "",
+    clientSecret: "",
     activePlaylists: [] as string[],
     activePlaylistsSettings: [] as string[]
 });
@@ -29,10 +33,12 @@ export const Settings = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(settings.isLoggedIn);
     const [token, setToken] = useState(settings.token);
     const [refreshToken, setRefreshToken] = useState(settings.refreshToken);
-    const [activePlaylistsSettings, setActivePlaylistsSettings] = useState(settings.activePlaylists);
+    const [activePlaylistsSettings, setActivePlaylistsSettings] = useState(settings.activePlaylistsSettings);
     const [generatorActive, setGeneratorActive] = useState(false);
     const [currentState, setCurrentState] = useState("Log in");
     const [playlists, setPlaylists] = useState<{ spotifyId: string; name: string }[]>([]);
+    const [clientId, setClientId] = useState(settings.clientId);
+    const [clientSecret, setClientSecret] = useState(settings.clientSecret);
 
     useEffect(() => {
         setCurrentState(isLoggedIn ? "Log out" : "Log in");
@@ -53,6 +59,31 @@ export const Settings = () => {
 
     return (
         <LunaSettings>
+            <p>
+                You can get the credentials from 
+                <a href="https://developer.spotify.com" target="_blank">https://developer.spotify.com</a> -
+                visit 
+                <a href="https://github.com/jxnxsdev/luna-plugins/spotify.md" target="_blank">this page</a>
+                for help
+            </p>
+            <LunaTextSetting
+                title="Spotify Client ID"
+                desc="Your Spotify Client ID from the Spotify Developer Dashboard."
+                value={clientId}
+                onChange={(e: any) => {
+                    setClientId((settings.clientId = e.target.value));
+                }}
+            />
+
+            <LunaTextSetting
+                title="Spotify Client Secret"
+                desc="Your Spotify Client Secret from the Spotify Developer Dashboard."
+                value={clientSecret}
+                onChange={(e: any) => {
+                    setClientSecret((settings.clientSecret = e.target.value));
+                }}
+            />
+
             <LunaButtonSetting
                 title="Spotify Login"
                 desc="Log in to your Spotify account to sync your playlists."
@@ -64,20 +95,23 @@ export const Settings = () => {
                         setCurrentState("Log in");
                     } else {
                         if (!generatorActive) {
+                            setCredentialsNative(clientId, clientSecret);
                             openSpotifyTokenGeneratorNative();
                             setGeneratorActive(true);
-                            setCurrentState("Load token after logging in");
+                            setCurrentState("Retrieve Token");
                         } else {
-                            const tokenResponse = await getTokenFromGeneratorNative();
-                            if (tokenResponse.success) {
-                                setIsLoggedIn((settings.isLoggedIn = true));
-                                setToken((settings.token = tokenResponse.token));
-                                setRefreshToken((settings.refreshToken = tokenResponse.refreshToken));
-                                setCurrentState("Log out");
-                            } else {
-                                console.error("Failed to log in to Spotify.");
-                                setGeneratorActive(false);
-                                setCurrentState("Log in");
+                            try {
+                                const response = await getTokenFromGeneratorNative();
+                                if (response.success) {
+                                    setToken((settings.token = response.token));
+                                    setRefreshToken((settings.refreshToken = response.refreshToken));
+                                    setIsLoggedIn((settings.isLoggedIn = true));
+                                    setCurrentState("Log out");
+                                } else {
+                                    console.error("Failed to retrieve token from generator.");
+                                }
+                            } catch (error) {
+                                console.error("Error retrieving token:", error);
                             }
                         }
                     }
@@ -115,6 +149,7 @@ export const Settings = () => {
                 desc="Clears the Sync for all playlists. The Synced playlists will not be deleted, but will no longer be synced with Tidal. You can re-add them at any time."
                 onClick={async () => {
                     setActivePlaylistsSettings((settings.activePlaylistsSettings = []));
+                    settings.activePlaylists = [];
                     updateActivePlaylists();
                 }}
             />

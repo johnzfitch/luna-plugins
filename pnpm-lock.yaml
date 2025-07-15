@@ -88,6 +88,9 @@ importers:
 
   plugins/Syncify:
     dependencies:
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
       sqlite:
         specifier: ^5.1.1
         version: 5.1.1
