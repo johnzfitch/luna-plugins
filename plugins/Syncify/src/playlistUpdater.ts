@@ -8,7 +8,8 @@ import {
   getDataSongs,
   addDataSong,
   editDataPlaylist,
-  trace
+  trace,
+  refreshTokenIfNeeded
 } from ".";
 import { settings } from "./Settings";
 import { SpotifyToDataSong } from "./converter";
@@ -22,6 +23,7 @@ export async function updatePlaylists() {
 
   isUpdating = true;
   try {
+    await refreshTokenIfNeeded();
     await updatePlaylistsInt();
   } catch (error) {
     trace.err(`Error during playlist update: ${error instanceof Error ? error.message : String(error)}`);

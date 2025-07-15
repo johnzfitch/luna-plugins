@@ -4,11 +4,9 @@ import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { shell } from "electron";
 import { SpotifyPlaylist, SpotifySong } from "./types/spotify";
+import * as webserver from "./webserver.native";
 
 import { tokenResponse } from "./types/tokenResponse";
-
-const generatorUrl = "https://syncify.jxnxsdev.me/login?uuid=";
-const tokenUrl = "https://syncify.jxnxsdev.me/getToken?uuid=";
 
 const appDataPath = path.join(os.homedir(), ".luna", "Syncify");
 const dataPath = path.join(appDataPath, "data.json");
@@ -32,64 +30,53 @@ async function ensureDataFile(): Promise<{ uuid: string }> {
 }
 
 export async function openSpotifyTokenGenerator(): Promise<void> {
+    const port = await webserver.getServerPort();
+    const url = `http://127.0.0.1:${port}/login`;
     try {
-        const { uuid } = await ensureDataFile();
-        const url = `${generatorUrl}${uuid}`;
-        shell.openExternal(url);
-    } catch {
-        // Optionally notify the user or log error
+        await shell.openExternal(url);
+    } catch (err) {
+        console.error("Failed to open Spotify token generator:", err);
     }
 }
 
 export async function getTokenFromGenerator(): Promise<tokenResponse> {
-    try {
-        const { uuid } = await ensureDataFile();
-        const response = await fetch(`${tokenUrl}${uuid}`);
+    let token = await webserver.getAccessToken();
+    let refreshToken = await webserver.getRefreshToken();
+    console.log("Retrieved tokens from generator:", { token, refreshToken });
 
-        if (!response.ok) throw new Error("Request failed");
 
-        const json = await response.json();
-
-        if (!json.accessToken || !json.refreshToken) {
-            return { token: "", refreshToken: "", success: false };
-        }
-
-        return {
-            token: json.accessToken,
-            refreshToken: json.refreshToken,
-            success: true
-        };
-    } catch (err) {
-        console.error("Failed to fetch token:", err);
+    if (!token || !refreshToken) {
+        console.error("No token or refresh token found. Please authenticate first.");
         return { token: "", refreshToken: "", success: false };
     }
+
+    return { token, refreshToken, success: true };
 }
 
-export async function refreshSpotifyToken(token: string, refreshToken: string): Promise<tokenResponse> {
+export async function refreshSpotifyToken(token: string, refreshToken: string, clientId: string, clientSecret: string): Promise<tokenResponse> {
     try {
-        const response = await fetch("https://syncify.jxnxsdev.me/refreshToken", {
+        const response = await fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: "Basic " + Buffer.from(`${clientId}:${clientSecret}`).toString("base64")
             },
-            body: JSON.stringify({ token, refreshToken })
+            body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: refreshToken
+            })
         });
 
-        if (!response.ok) throw new Error("Request failed");
-
-        const json = await response.json();
-
-        if (!json.accessToken) {
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Failed to refresh token:", errorText);
             return { token: "", refreshToken: "", success: false };
         }
 
-        return {
-            token: json.accessToken,
-            refreshToken: "",
-            success: true
-        };
+        const data = await response.json();
+        return { token: data.access_token, refreshToken: data.refresh_token || "", success: true };
     } catch (err) {
-        console.error("Failed to refresh token:", err);
+        console.error("Error refreshing Spotify token:", err);
         return { token: "", refreshToken: "", success: false };
     }
 }
