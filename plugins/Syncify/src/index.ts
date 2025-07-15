@@ -37,6 +37,9 @@ async function initializePlugin() {
     await updatePlaylists();
 
     if (!settings.popupWasShown) {
+        settings.isLoggedIn = false;
+        settings.token = "";
+        settings.refreshToken = "";
         settings.popupWasShown = true;
         await showPopup();
     }
