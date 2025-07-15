@@ -35,7 +35,70 @@ async function initializePlugin() {
     initializeDatabase();
     await refreshTokenIfNeeded();
     await updatePlaylists();
+
+    if (!settings.popupWasShown) {
+        settings.popupWasShown = true;
+        await showPopup();
+    }
 };
+
+async function showPopup() {
+  const popup = document.createElement('div');
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.background = '#1e1e1e';
+  popup.style.border = '1px solid #333';
+  popup.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.6)';
+  popup.style.padding = '24px 32px';
+  popup.style.zIndex = '10000';
+  popup.style.maxWidth = '90%';
+  popup.style.width = '500px';
+  popup.style.borderRadius = '12px';
+  popup.style.fontFamily = 'Segoe UI, sans-serif';
+  popup.style.color = '#eee';
+  popup.style.textAlign = 'center';
+  popup.style.backdropFilter = 'blur(6px)';
+  popup.style.backgroundClip = 'padding-box';
+
+  popup.innerHTML = `
+    <div style="font-size: 18px; margin-bottom: 16px;">
+      <strong>Syncify has been updated</strong><br><br>
+      Syncify now requires you to provide your own OAuth credentials.<br>
+      This is because Spotify limits requests per application and not per user.<br>
+      You will find a link to a guide inside the Syncify settings.
+    </div>
+    <button id="popup-close-btn" style="
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #3a3a3a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    ">Close</button>
+  `;
+
+  document.body.appendChild(popup);
+
+  // Add close functionality with slight fade-out
+  const closeBtn = document.getElementById('popup-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('mouseenter', () => {
+      closeBtn.style.backgroundColor = '#555';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+      closeBtn.style.backgroundColor = '#3a3a3a';
+    });
+    closeBtn.addEventListener('click', () => {
+      popup.style.opacity = '0';
+      popup.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => popup.remove(), 300);
+    });
+  }
+}
 
 export async function refreshTokenIfNeeded() {
     const { token, refreshToken, clientId, clientSecret } = settings;
