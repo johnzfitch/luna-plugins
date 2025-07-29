@@ -15,6 +15,23 @@ import { settings } from "./Settings";
 import { SpotifyToDataSong } from "./converter";
 
 let isUpdating = false;
+
+async function safeMediaItemFromId(id: string): Promise<lib.MediaItem | null> {
+  try {
+    const item = await lib.MediaItem.fromId(id);
+    if (
+      item &&
+      typeof await item.title() === "string"
+    ) {
+      return item;
+    }
+    return null;
+  } catch (err) {
+    trace.err(`Error resolving media item '${id}': ${String(err)}`);
+    return null;
+  }
+}
+
 export async function updatePlaylists() {
   if (isUpdating) {
     trace.warn("Playlist update already in progress. Please wait until the current update is finished.");
@@ -126,11 +143,11 @@ export async function updatePlaylistsInt() {
 
     const mediaItems: lib.MediaItem[] = [];
     for (const song of dataPlaylistSongs) {
-      const mediaItem = await lib.MediaItem.fromId(song.tidalId);
+      const mediaItem = await safeMediaItemFromId(song.tidalId);
       if (mediaItem) {
         mediaItems.push(mediaItem);
       } else {
-        trace.warn(`Media item with ID '${song.tidalId}' not found.`);
+        trace.err(`Invalid or missing media item for '${song.tidalId}'`);
       }
     }
 

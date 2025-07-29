@@ -110,38 +110,57 @@ export async function getSpotifyPlaylists(token: string): Promise<SpotifyPlaylis
     }
 }
 
-export async function getSpotifyPlaylistSongs(spotifyPlaylist: SpotifyPlaylist, token: string): Promise<SpotifyPlaylist> {
-    try {
-        const response = await fetch(`https://api.spotify.com/v1/playlists/${spotifyPlaylist.spotifyId}/tracks`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+export async function getSpotifyPlaylistSongs(
+  spotifyPlaylist: SpotifyPlaylist,
+  token: string
+): Promise<SpotifyPlaylist> {
+  const songs: SpotifySong[] = [];
+  let offset = 0;
+  const limit = 100;
 
-        if (!response.ok) throw new Error("Failed to fetch playlist songs");
-
-        const data = await response.json();
-        const songs: SpotifySong[] = [];
-
-        for (const item of data.items) {
-            if (item.track) {
-                songs.push({
-                    title: item.track.name,
-                    // @ts-expect-error
-                    artists: item.track.artists.map(artist => artist.name),
-                    spotifyId: item.track.id
-                });
-            }
+  try {
+    while (true) {
+      const response = await fetch(
+        `https://api.spotify.com/v1/playlists/${spotifyPlaylist.spotifyId}/tracks?limit=${limit}&offset=${offset}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-        return {
-            ...spotifyPlaylist,
-            songs: songs
-        };
-    } catch (err) {
-        console.error("Error fetching playlist songs:", err);
-        return {
-            ...spotifyPlaylist,
-            songs: []
-        };
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch playlist songs at offset ${offset}: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      for (const item of data.items) {
+        const track = item.track;
+        if (track && track.id && track.name && track.artists) {
+          songs.push({
+            title: track.name,
+            // @ts-expect-error
+            artists: track.artists.map((artist) => artist.name),
+            spotifyId: track.id
+          });
+        }
+      }
+
+      if (!data.next) break; // No more results
+      offset += limit;
     }
+
+    return {
+      ...spotifyPlaylist,
+      songs
+    };
+  } catch (err) {
+    console.error("Error fetching playlist songs:", err);
+    return {
+      ...spotifyPlaylist,
+      songs: []
+    };
+  }
 }
+
