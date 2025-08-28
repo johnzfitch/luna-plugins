@@ -49,6 +49,12 @@ importers:
 
   plugins/LyricsEverywhere: {}
 
+  plugins/Miniplayer:
+    dependencies:
+      clipboardy:
+        specifier: ^4.0.0
+        version: 4.0.0
+
   plugins/PlaylistExport:
     dependencies:
       clipboardy:
