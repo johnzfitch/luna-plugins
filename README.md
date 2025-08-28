@@ -12,6 +12,11 @@ This README is auto-generated from the plugin metadata in the `plugins/` folder.
 - **Version**: 0.0.0
 - **Author**: jxnxsdev
 
+### @jxnxsdev/miniplayer
+- **Description**: Adds a mini popout player to tidal
+- **Version**: 0.0.0
+- **Author**: jxnxsdev
+
 ### @jxnxsdev/playlist-export
 - **Description**: Exports playlists to a m3u8 file.
 - **Version**: 0.0.0
