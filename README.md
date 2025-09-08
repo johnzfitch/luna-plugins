@@ -7,6 +7,11 @@ This README is auto-generated from the plugin metadata in the `plugins/` folder.
 - **Version**: 0.0.0
 - **Author**: jxnxsdev
 
+### @jxnxsdev/fadeout
+- **Description**: Fades out the song to the end of a track and makes a smooth transition to the next one.
+- **Version**: 0.0.0
+- **Author**: jxnxsdev
+
 ### @jxnxsdev/lyrics-everywhere
 - **Description**: Lyrics fixed to the bottom of the screen.
 - **Version**: 0.0.0
