@@ -174,6 +174,8 @@ async function addPlaylistToSync(spotifyId: string): Promise<void> {
             return;
         }
         settings.activePlaylists.push(existingDataPlaylist.tidalId);
+        // Already have a stored mapping; no need to create a new TIDAL playlist
+        return;
     }
 
     const playlists = await getSpotifyPlaylistsNative(settings.token);
@@ -231,7 +233,7 @@ async function removePlaylistFromSync(tidalId: string): Promise<void> {
     }
 
     settings.activePlaylists = settings.activePlaylists.filter(id => id !== existingDataPlaylist.tidalId);
-    trace.log(`Removed playlist with Spotify ID '${tidalId}' from active playlists.`);
+    trace.log(`Removed playlist with Tidal ID '${tidalId}' from active playlists.`);
 }
 
 export async function updateActivePlaylists(): Promise<void> {
