@@ -169,6 +169,7 @@ export async function updatePlaylistsInt() {
     }
 
     let offsetCount = 0;
+    let aborted = false;
 
     for (let i = 0; i < mediaItems.length; i++) {
       const newItem = mediaItems[i];
@@ -183,17 +184,27 @@ export async function updatePlaylistsInt() {
 
       const result = await addMediaItemToPlaylist(playlist, newItem, etag);
       if (!result.success) {
-        trace.err(`Failed to add media item '${newItem.title}' to playlist '${dataPlaylist.name}'. Aborting further updates.`);
+        // Avoid logging function references; use resolved title
+        const newItemTitle = typeof newItem.title === "function" ? await newItem.title() : String(newItem.title);
+        trace.err(`Failed to add media item '${newItemTitle}' to playlist '${dataPlaylist.name}'. Aborting further updates.`);
+        aborted = true;
         break;
       }
 
       etag = result.newEtag ?? etag;
-      trace.log(`Added media item '${newItem.title}' to playlist '${dataPlaylist.name}'.`);
+      const addedTitle = typeof newItem.title === "function" ? await newItem.title() : String(newItem.title);
+      trace.log(`Added media item '${addedTitle}' to playlist '${dataPlaylist.name}'.`);
+    }
+
+    if (aborted) {
+      // Skip removal and success summary for this playlist when aborted
+      continue;
     }
 
     for (let i = mediaItems.length; i < playlistItems.length; i++) {
       await deleteMediaItemFromPlaylist(playlist, i - offsetCount);
-      trace.log(`Removed media item '${playlistItems[i].title}' from playlist '${dataPlaylist.name}'.`);
+      const removedTitle = typeof playlistItems[i].title === "function" ? await playlistItems[i].title() : String(playlistItems[i].title);
+      trace.log(`Removed media item '${removedTitle}' from playlist '${dataPlaylist.name}'.`);
     }
 
     trace.log(`Playlist '${dataPlaylist.name}' updated successfully with ${mediaItems.length} songs.`);
@@ -234,12 +245,11 @@ async function addMediaItemToPlaylist(
       headers: {
         "Authorization": `Bearer ${creds.token}`,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "Accept": "application/json",
-        "If-None-Match": etag
+        "Accept": "application/json"
       },
       referrer: `https://desktop.tidal.com/playlist/${playlist.uuid}`,
       referrerPolicy: "strict-origin-when-cross-origin",
-      body: `onArtifactNotFound=FAIL&onDupes=FAIL&trackIds=${mediaItem.id}`
+      body: `onArtifactNotFound=SKIP&onDupes=SKIP&trackIds=${mediaItem.id}`
     });
 
     if (!response.ok) {
